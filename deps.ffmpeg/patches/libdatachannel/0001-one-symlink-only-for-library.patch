@@ -1,0 +1,21 @@
+XCode only resolves one level of symlinks [0].
+
+By default libdatachannel generates three layers. This patch
+reduces that to two.
+
+[0] https://stackoverflow.com/questions/29946961/xcode-copy-files-build-phase-and-symlinks
+
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2ba612d8..1f4348d1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -262,7 +262,7 @@ add_library(datachannel SHARED
+ 	${LIBDATACHANNEL_IMPL_HEADERS})
+ set_target_properties(datachannel PROPERTIES
+ 	VERSION ${PROJECT_VERSION}
+-	SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
++	SOVERSION ${PROJECT_VERSION}
+ 	CXX_STANDARD 17
+ 	CXX_VISIBILITY_PRESET default)
+ target_compile_definitions(datachannel PRIVATE RTC_EXPORTS)

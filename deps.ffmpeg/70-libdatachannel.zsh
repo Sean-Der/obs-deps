@@ -2,9 +2,13 @@ autoload -Uz log_debug log_error log_info log_status log_output
 
 ## Dependency Information
 local name='libdatachannel'
-local version='v0.19.0-alpha.4'
-local url='https://github.com/paullouisageneau/libdatachannel.git'
-local hash='709a66339451bb4c8d4e5ced78c67605ec09da31'
+local version='v0.19.4'
+local url='https://github.com/sean-der/libdatachannel.git'
+local hash='0e02e5a65de4216da6d9fbc9f79cfac2258e61bc'
+local -a patches=(
+  "macos ${0:a:h}/patches/libdatachannel/0001-one-symlink-only-for-library.patch \
+    f02f672efd0bef2fbbf7672f142109682099a623a02c1f0e2e284a6ae7303f4d"
+)
 
 ## Dependency Overrides
 local -i shared_libs=1
@@ -24,6 +28,23 @@ clean() {
     log_info "Clean build directory (%F{3}${target}%f)"
 
     rm -rf "build_${arch}"
+  }
+}
+
+patch() {
+  autoload -Uz apply_patch
+
+  log_info "Patch (%F{3}${target}%f)"
+  cd ${dir}
+
+  local patch
+  local _target
+  local _url
+  local _hash
+  for patch (${patches}) {
+    read _target _url _hash <<< "${patch}"
+
+    if [[ ${_target} == ${target%%-*} ]] apply_patch ${_url} ${_hash}
   }
 }
 
